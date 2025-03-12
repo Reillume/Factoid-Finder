@@ -12,14 +12,14 @@ The Factoid Finder was created to help identify and retrieve relevant informatio
 
 This program was designed to work on a broad range of hardware with minimal external dependencies. Requirements are:
 
-- Python 3.12 and required packages, see the full list in Setup/requirements.txt
+- Python 3.12 and required packages, see the full list in [Setup/requirements.txt](https://github.com/Reillume/Factoid-Finder/blob/main/Setup/requirements.txt)
 - A modern web browser that is capable of running a Gradio Interface (includes Chrome, Edge, Firefox, etc.)
 
 ## Quick Start
 
 1. Install program requirements.
 2. Clone this directory or download and extract the Factoid-Finder.zip folder to your computer.
-3. Run the script Interface.py in an environment that has the required dependencies installed.
+3. Run the script [Interface.py](https://github.com/Reillume/Factoid-Finder/blob/main/Scripts/Interface.py) in an environment that has the required dependencies installed.
 4. Create a new encoded PDF library or load an existing one.
 5. Begin searching PDFs for relevant information by entering a query.
 
@@ -27,7 +27,7 @@ This program was designed to work on a broad range of hardware with minimal exte
 
 1. **Install Python 3.12.**
 2. **Save and unzip Factoid-Finder.zip to its own folder on your computer.** The name of this folder can be anything, but all of the files from the Factoid-Finder.zip archive must be contained within this one folder.
-3. **Create and activate a virtual environment, install packages in Setup/requirements.txt, then run the script Interface.py.** Optionally, the batch file Run_Factoid_Finder.bat can be used to automate installing and opening of the program. Simply modify line 7 to point to your Python 3.12 executable if it is not saved at the default location: 'C:\\Program Files\\Python312\\python.exe'.
+3. **Create and activate a virtual environment, install packages in [Setup/requirements.txt](https://github.com/Reillume/Factoid-Finder/blob/main/Setup/requirements.txt), then run the script [Interface.py](https://github.com/Reillume/Factoid-Finder/blob/main/Scripts/Interface.py).** Optionally, the batch file [Run_Factoid_Finder.bat](https://github.com/Reillume/Factoid-Finder/blob/main/Run_Factoid_Finder.bat) can be used to automate installing and opening of the program. Simply modify line 7 to point to your Python 3.12 executable if it is not saved at the default location: 'C:\\Program Files\\Python312\\python.exe'.
 4. **The program will open in your default web browser.** See the next section ‘Using the Factoid Finder’ for details.
 
 ## Using the Factoid Finder
@@ -38,7 +38,7 @@ This program was designed to work on a broad range of hardware with minimal exte
 
 The Factoid-Finder allows for text to be extracted from machine-readable PDFs, after which it can be searched.
 
-To open this program, run the script Interface.py in an environment with the requirements installed or double-click ‘_Run_Factoid_Finder.bat_’ in the Factoid Finder folder. If the batch file is used, the black and white Command Prompt window must be left open for the program to run. After loading, the program will open to this view in your default web browser:  
+To open this program, run the script [Interface.py](https://github.com/Reillume/Factoid-Finder/blob/main/Scripts/Interface.py) in an environment with the requirements installed or use the batch file [Run_Factoid_Finder.bat](https://github.com/Reillume/Factoid-Finder/blob/main/Run_Factoid_Finder.bat) if it has been set up. If the batch file is used, the Command Prompt window must be left open for the program to run. After loading, the program will open to this view in your default web browser:  
 ![Image](https://github.com/Reillume/Factoid-Finder/blob/main/Setup/Picture1.png)
 
 You will need to either create a new Encoded Library from a folder of PDFs or load an Encoded Library you have already created. Encoded libraries can be created by selecting the ‘Create New’ option and then entering a path to a folder with PDFs. This will generate a .pkl file in the ‘Encoded Libraries’ folder within the Factoid Finder’s main folder. Once an Encoded Library has been created (the .pkl file), you can load it directly in future by selecting ‘Load Existing’ and pasting the path to the .pkl file (including the file name itself).
