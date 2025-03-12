@@ -39,11 +39,11 @@ This program was designed to work on a broad range of hardware with minimal exte
 The Factoid-Finder allows for text to be extracted from machine-readable PDFs, after which it can be searched.
 
 To open this program, run the script Interface.py in an environment with the requirements installed or double-click ‘_Run_Factoid_Finder.bat_’ in the Factoid Finder folder. If the batch file is used, the black and white Command Prompt window must be left open for the program to run. After loading, the program will open to this view in your default web browser:  
-!(https://github.com/Reillume/Factoid-Finder/blob/main/Setup/Picture1.png)
+![Image](https://github.com/Reillume/Factoid-Finder/blob/main/Setup/Picture1.png)
 You will need to either create a new Encoded Library from a folder of PDFs or load an Encoded Library you have already created. Encoded libraries can be created by selecting the ‘Create New’ option and then entering a path to a folder with PDFs. This will generate a .pkl file in the ‘Encoded Libraries’ folder within the Factoid Finder’s main folder. Once an Encoded Library has been created (the .pkl file), you can load it directly in future by selecting ‘Load Existing’ and pasting the path to the .pkl file (including the file name itself).
 
 _Note:_ Loading an Encoded Library file (.pkl) that you created previously is much faster than extracting text and creating the library anew.
-!(https://github.com/Reillume/Factoid-Finder/blob/main/Setup/Picture2.png)
+![Image](https://github.com/Reillume/Factoid-Finder/blob/main/Setup/Picture2.png)
 It is recommended that PDFs be saved in their own folder, somewhere they won’t be moved. If PDFs are moved after the Encoded Library has been created, the links to them that are provided in the search results will no longer work.
 
 After entering a valid path, click ‘Start’ to create or load the library. Creating an Encoded Library may take a few minutes to a few hours, depending on the size of the PDF collection and computer hardware. Once the process finishes, a search bar will appear and queries can now be entered.
