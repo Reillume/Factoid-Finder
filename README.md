@@ -44,6 +44,7 @@ To open this program, run the script Interface.py in an environment with the req
 You will need to either create a new Encoded Library from a folder of PDFs or load an Encoded Library you have already created. Encoded libraries can be created by selecting the ‘Create New’ option and then entering a path to a folder with PDFs. This will generate a .pkl file in the ‘Encoded Libraries’ folder within the Factoid Finder’s main folder. Once an Encoded Library has been created (the .pkl file), you can load it directly in future by selecting ‘Load Existing’ and pasting the path to the .pkl file (including the file name itself).
 
 _Note:_ Loading an Encoded Library file (.pkl) that you created previously is much faster than extracting text and creating the library anew.
+
 ![Image](https://github.com/Reillume/Factoid-Finder/blob/main/Setup/Picture2.png)
 
 It is recommended that PDFs be saved in their own folder, somewhere they won’t be moved. If PDFs are moved after the Encoded Library has been created, the links to them that are provided in the search results will no longer work.
