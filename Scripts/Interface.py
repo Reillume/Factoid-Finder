@@ -84,11 +84,6 @@ def loadLib(libPath, radio, mergeL=False, progress=gr.Progress(track_tqdm=True))
         if radio == 'Create New':
             if os.path.isdir(libPath) == False: # Check to make sure that the path points to a folder and exists
                 raise gr.Error("The specified folder could not be located.") # If it doesn't, raise an error.
-
-            # This 'if' statement ensures that users only provide paths to folders on their local computers.
-            # It ensures that the creation of the encoded library is efficient, and that users don't misuse the shared drives.
-            if libPath[0].upper() != 'C': 
-                raise gr.Error('Folder must be located on the C: drive') # Raise an error if the path is not on the C: drive.
                 
             gr.Info("Creating library. This can take several hours.") # Display a progress message to the user in the GUI.
             print("Creating library. This can take several hours.") # Displays a progress message in the Command Prompt window.
