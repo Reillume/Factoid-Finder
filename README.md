@@ -80,6 +80,7 @@ This project uses several third-party libraries:
 - Gradio - Licensed under the Apache License 2.0
 - tqdm - Licensed under the MIT License
 - Phi-3.5-Mini-Instruct – Licensed under the MIT License
-- MS Marco Distilbert Dot-v5 – Licensed under the Apache License 2.0
+- MS Marco Distilbert Dot v5 – Licensed under the Apache License 2.0
+- MS Marco MiniLM L6 v2 - Licensed under the Apache License 2.0
 
-For more information on these libraries, please visit their respective GitHub pages.
+For more information on these libraries and models, please visit their respective GitHub pages.
