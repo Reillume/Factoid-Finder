@@ -6,7 +6,7 @@ Tested with Python 3.12 on Windows 11.
 
 ## Introduction
 
-The Factoid Finder was created to help identify and retrieve relevant information from collections of PDF documents. Example uses include finding small pieces of obscure information (factoids) within PDFs based on a search query and returning their location within the document, creating a short list of sections within documents that discuss a specific topic, and so on. We hope that you find this tool useful.
+The Factoid Finder was created to help identify and retrieve relevant information from collections of PDF documents. It can search the text within machine-readable PDFs and will return a link to relevant paragraphs and pages based on your search query. Example uses include finding small pieces of obscure information (factoids) within documents, creating a list of sections within a collection of documents that discuss a specific topic (even if they are not in the table of contents), and so on. This can be particularly useful for tasks like literature reviews, or making collections of PDFs that are saved to your computer searchable. As the Factoid Finder uses semantic search rather than keyword search, it can locate relevant information that methods like Control Find (Ctrl+F) might miss. The Factoid Finder runs locally on your computer and is fully open-source. I hope that you find this tool useful.
 
 ## Requirements
 
@@ -14,11 +14,14 @@ This program was designed to work on a broad range of hardware with minimal exte
 
 - Python 3.12 and required packages, see the full list in [Setup/requirements.txt](https://github.com/Reillume/Factoid-Finder/blob/main/Setup/requirements.txt)
 - A modern web browser that is capable of running a Gradio Interface (includes Chrome, Edge, Firefox, etc.)
+- Minimum 2GB of available RAM
+
+Note: A GPU or dedicated VRAM is **not** required!
 
 ## Quick Start
 
-1. Install program requirements.
-2. Clone this directory or download and extract the Factoid-Finder.zip folder to your computer.
+1. Clone this directory or download and extract the Factoid-Finder.zip folder to your computer.
+2. Install program requirements.
 3. Run the script [Interface.py](https://github.com/Reillume/Factoid-Finder/blob/main/Scripts/Interface.py) in an environment that has the required dependencies installed.
 4. Create a new encoded PDF library or load an existing one.
 5. Begin searching PDFs for relevant information by entering a query.
@@ -26,8 +29,8 @@ This program was designed to work on a broad range of hardware with minimal exte
 ## Installation
 
 1. **Install Python 3.12.**
-2. **Save and unzip Factoid-Finder.zip to its own folder on your computer.** The name of this folder can be anything, but all of the files from the Factoid-Finder.zip archive must be contained within this one folder.
-3. **Create and activate a virtual environment, install packages in [Setup/requirements.txt](https://github.com/Reillume/Factoid-Finder/blob/main/Setup/requirements.txt), then run the script [Interface.py](https://github.com/Reillume/Factoid-Finder/blob/main/Scripts/Interface.py).** Optionally, the batch file [Run_Factoid_Finder.bat](https://github.com/Reillume/Factoid-Finder/blob/main/Run_Factoid_Finder.bat) can be used to automate installing and opening of the program. Simply modify line 7 to point to your Python 3.12 executable if it is not saved at the default location: 'C:\\Program Files\\Python312\\python.exe'.
+2. **Save and unzip the Factoid Finder repository to its own folder on your computer.** The name of this folder can be anything, but all of the files from the repository must be contained within this one folder.
+3. **Create and activate a virtual environment, install the packages in [Setup/requirements.txt](https://github.com/Reillume/Factoid-Finder/blob/main/Setup/requirements.txt), then run the script [Interface.py](https://github.com/Reillume/Factoid-Finder/blob/main/Scripts/Interface.py).** Optionally, the batch file [Run_Factoid_Finder.bat](https://github.com/Reillume/Factoid-Finder/blob/main/Run_Factoid_Finder.bat) can be used to automate installing and opening of the program. Simply modify line 7 to point to your Python 3.12 executable if it is not saved at the default location: 'C:\\Program Files\\Python312\\python.exe'.
 4. **The program will open in your default web browser.** See the next section ‘Using the Factoid Finder’ for details.
 
 ## Using the Factoid Finder
@@ -38,7 +41,7 @@ This program was designed to work on a broad range of hardware with minimal exte
 
 The Factoid-Finder allows for text to be extracted from machine-readable PDFs, after which it can be searched.
 
-To open this program, run the script [Interface.py](https://github.com/Reillume/Factoid-Finder/blob/main/Scripts/Interface.py) in an environment with the requirements installed or use the batch file [Run_Factoid_Finder.bat](https://github.com/Reillume/Factoid-Finder/blob/main/Run_Factoid_Finder.bat) if it has been set up. If the batch file is used, the Command Prompt window must be left open for the program to run. After loading, the program will open to this view in your default web browser:  
+To open this program, run the script [Interface.py](https://github.com/Reillume/Factoid-Finder/blob/main/Scripts/Interface.py) in an environment with the requirements installed or use the batch file [Run_Factoid_Finder.bat](https://github.com/Reillume/Factoid-Finder/blob/main/Run_Factoid_Finder.bat). If the batch file is used, the Command Prompt window must be left open for the program to run. After loading, the program will open to this view in your default web browser:  
 ![Image](https://github.com/Reillume/Factoid-Finder/blob/main/Setup/Picture1.png)
 
 You will need to either create a new Encoded Library from a folder of PDFs or load an Encoded Library you have already created. Encoded libraries can be created by selecting the ‘Create New’ option and then entering a path to a folder with PDFs. This will generate a .pkl file in the ‘Encoded Libraries’ folder within the Factoid Finder’s main folder. Once an Encoded Library has been created (the .pkl file), you can load it directly in future by selecting ‘Load Existing’ and pasting the path to the .pkl file (including the file name itself).
@@ -53,7 +56,7 @@ After entering a valid path, click ‘Start’ to create or load the library. Cr
 
 To conduct a search query, enter a question or phrase for which you are seeking information within the suite of PDFs and press “Search”. The number of search results that are returned can be modified in the “Advanced Settings” box (more settings may be added in future). Search results are displayed in order of decreasing relevance.
 
-Search Tip: The quality of search results is much higher for precise and specific _questions_. Searches based only on keywords will generally not produce satisfactory results. For example, the search ‘wildfire salmon’ produces almost nothing of relevance, while the more specific question ‘how wildfire affects salmon’ returns useful results (provided this information is in the current library).
+Search Tip: The quality of search results is much higher for precise and specific questions. Searches based only on keywords will generally not produce satisfactory results. For example, the search ‘wildfire salmon’ produces almost nothing of relevance, while the more specific question ‘how wildfire affects salmon’ returns useful results (provided this information is in the current library).
 
 ## Advisories
 
