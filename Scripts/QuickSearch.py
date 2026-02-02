@@ -105,7 +105,7 @@ def Search(UInput, Results_slider, genAI): # Arguments are the user's query, the
 
         # If the similarity score of a result is below 0.8, provide a warning to the user in the search results. Since results are sorted in order of decreasing similarity, this only needs to be done once.
         if (ce_score < 0.8) and (warningGiven == False):
-            relevanceWarn = r'<mark>Warning: The following results do not appear to be very relevant to your query.</mark><br>'
+            relevanceWarn = r'⚠️ Warning: The following results do not appear to be very relevant to your query. ⚠️<br>'
             warningGiven = True
 
         else: relevanceWarn = '' # This ensures that the warning message does not persist into additional search results (only needs to be given once).
@@ -165,4 +165,5 @@ def Search(UInput, Results_slider, genAI): # Arguments are the user's query, the
         sResults = f"**AI Summary**: {genAIout} <br> {sResults}"
     
     print(sResults) # Print the search results to the Command Prompt window for reference.
+
     return sResults # Return the search results to be displayed in the GUI.
