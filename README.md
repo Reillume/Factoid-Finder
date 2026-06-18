@@ -30,7 +30,7 @@ Note: A GPU or dedicated VRAM is **not** required!
 
 1. **Install Python 3.12.**
 2. **Save and unzip the Factoid Finder repository to its own folder on your computer.** The name of this folder can be anything, but all of the files from the repository must be contained within this one folder.
-3. **Create and activate a virtual environment, install the packages in [Setup/requirements.txt](https://github.com/Reillume/Factoid-Finder/blob/main/Setup/requirements.txt), then run the script [Interface.py](https://github.com/Reillume/Factoid-Finder/blob/main/Scripts/Interface.py).** Optionally, the batch file [Run_Factoid_Finder.bat](https://github.com/Reillume/Factoid-Finder/blob/main/Run_Factoid_Finder.bat) can be used to automate installing and opening of the program. Simply modify line 7 to point to your Python 3.12 executable if it is not saved at the default location: '%LOCALAPPDATA%\\Programs\\Python\\Python312\\python.exe'.
+3. **Create and activate a virtual environment, install the packages in [Setup/requirements.txt](https://github.com/Reillume/Factoid-Finder/blob/main/Setup/requirements.txt), then run the script [Interface.py](https://github.com/Reillume/Factoid-Finder/blob/main/Scripts/Interface.py).** Optionally, the batch file [Run_Factoid_Finder.bat](https://github.com/Reillume/Factoid-Finder/blob/main/Run_Factoid_Finder.bat) can be used to automate installing and opening the program. Simply modify line 7 to point to your Python 3.12 executable if it is not saved at the default location: '%LOCALAPPDATA%\\Programs\\Python\\Python312\\python.exe'.
 4. **The program will open in your default web browser.** See the next section ‘Using the Factoid Finder’ for details.
 
 ## Using the Factoid Finder

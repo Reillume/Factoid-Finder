@@ -1,0 +1,6 @@
+# Ignore WIP artifacts
+.ffEnv/
+.vscode/
+Encoded Libraries/
+__pycache__/
+Logs/

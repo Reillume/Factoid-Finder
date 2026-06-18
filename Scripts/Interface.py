@@ -19,6 +19,10 @@ import tkinter as tk # Optional - Base Python package that is used to open a Sel
 if os.getcwd()[-7:] == 'Scripts':
     os.chdir("..")
 
+
+
+    
+
 # Loads the AI models used for semantic search and cross-encoding when the program is started.
 print('Initializing AI models...') # Progress message for the Command Prompt window.
 try: QuickSearch.initializeEmbedders() # Attempts to load the SLMs used for encoding and search.

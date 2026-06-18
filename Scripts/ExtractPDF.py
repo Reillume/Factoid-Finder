@@ -1,3 +1,5 @@
+# TODO: Update PyMuPDF with PyMuPDF4llm
+
 '''
 This script is used to extract text from machine-readable PDFs and
 encode them using the Small Language Models that perform semantic
