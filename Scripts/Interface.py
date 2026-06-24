@@ -88,11 +88,9 @@ def loadLib(libPath, radio, mergeL=False, progress=gr.Progress(track_tqdm=True))
         if radio == 'Create New':
             if os.path.isdir(libPath) == False: # Check to make sure that the path points to a folder and exists
                 raise gr.Error("The specified folder could not be located.") # If it doesn't, raise an error.
-                
-            gr.Info("Creating library. This can take several hours.") # Display a progress message to the user in the GUI.
-            print("Creating library. This can take several hours.") # Displays a progress message in the Command Prompt window.
-            
-            
+
+            print("Creating library...") # Displays a progress message in the Command Prompt window.
+                        
             try:
                 ExtractPDF.makeList(libPath) # Calls a function from the ExtractPDF script that makes a list of all the PDFs found at the specified path. See script for details.
                 
@@ -115,10 +113,6 @@ def loadLib(libPath, radio, mergeL=False, progress=gr.Progress(track_tqdm=True))
             # If an unknown error occurs, display the following message in the GUI.
             except: raise gr.Error('An error occurred while creating the encoded library.')
 
-            # Display the following progress messages in the GUI and Command Prompt window.
-            gr.Info("Library created. The library and detailed logs are saved to their respective folders within the Factoid Finder folder.")
-            print("Library created. The library and detailed logs are saved to their respective folders within the Factoid Finder folder.")
-
         # If we are adding PDFs to an existing library, run the appropriate script.
         if mergeL == True:
             libPath = MergeLibraries.mergeLibs(loadedLibPath, libPath) # Calls a function from MergeLibraries. Takes the path to the active encoded library
@@ -133,15 +127,13 @@ def loadLib(libPath, radio, mergeL=False, progress=gr.Progress(track_tqdm=True))
             raise gr.Error(f"The specified path does not point to a .pkl file.") # Raise an error.
 
         # Display a progress message in both the GUI and Command Prompt window.
-        gr.Info("Loading library...", duration = 1)
         print('Loading library...')
 
         # This function will try to load the specified Pickle file (contains the encoded library), or raise an error if it fails. See QuickSearch script for further details.
         try: loadedLibPath = QuickSearch.loadPickle(libPath) # Updates the variable that tracks the currently loaded library.
         except: raise gr.Error('An unexpected error occurred while loading the encoded library.')
 
-        # Display a progress message in both the GUI and Command Prompt window.
-        gr.Info("Library successfully loaded.", duration = 4)
+        # Display a progress message in the terminal.
         print('Library successfully loaded.')
 
         # The following variables are used to update the Gradio GUI.
@@ -157,8 +149,8 @@ def loadLib(libPath, radio, mergeL=False, progress=gr.Progress(track_tqdm=True))
 def expandLib(progress=gr.Progress(track_tqdm=True)):
     
     #Display progress messages in both GUI and Command Prompt window.
-    gr.Info('Folder Select opened in new window.', duration = 5)
-    print('Folder Select opened in new window.')
+    gr.Info('Folder Selector opened in new window.', duration = 5)
+    print('Folder Selector opened in new window.')
     
     #This code will make sure that tkinter opens on the topmost window.
     root = tk.Tk()
