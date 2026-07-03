@@ -1,3 +1,4 @@
+# TODO: Replace library creation and management functionality with separate wizard.
 '''
 This script is the master script from which all other scripts are called. It also controls the graphical user interface
 from which user's can create and search PDF libraries. The script is built around the Python package Gradio (v5.6).
@@ -72,11 +73,8 @@ def loadLib(libPath, radio, mergeL=False, progress=gr.Progress(track_tqdm=True))
     # If the user enters a blank path, it will halt the function and make no changes to the GUI.
     if libPath == "":
 
-        gr.Info('No path was specified.', duration = 0.6) # Display a message informing the user as to why nothing is happening.
+        raise gr.Error('No path was specified.', duration = 1) # Display a message informing the user as to why nothing is happening.
         
-        # Since Gradio demands outputs, the following line specifies outputs that make no changes to the GUI.
-        return gr.update(equal_height=True), gr.update(open=False), gr.update(show_label=False), gr.update(visible=True), gr.update(scale=0), gr.update(interactive=False)
-
     # The else statement will run as long as a string is provided.
     else:
         
@@ -105,13 +103,18 @@ def loadLib(libPath, radio, mergeL=False, progress=gr.Progress(track_tqdm=True))
                     print(f'One or more PDFs could not be properly encoded and so was not included in the library. See {logPath} for details.')
 
             # The ExtractPDF script is set to flag an index error if no content is found for the library.
-            except IndexError: raise gr.Error('No PDFs with machine-readable text were found in the specified folder.', duration = 15)
-
+            except IndexError:
+                raise gr.Error('No PDFs with machine-readable text were found in the specified folder.', duration = 15)
+            
             # The ExtractPDF script is set to flag a value error if content is found for the library, but none of it is new.
-            except ValueError: raise gr.Error('No new machine-readable PDFs were found in the specified folder.')
+            except ValueError: 
+                gr.Warning('No new machine-readable PDFs were found in the specified folder.', duration=15)
+                # Safely exit the function without changing the program state any further
+                return gr.update(), gr.update(), gr.update(), gr.update(), gr.update(), gr.update()
 
             # If an unknown error occurs, display the following message in the GUI.
-            except: raise gr.Error('An error occurred while creating the encoded library.')
+            except: 
+                raise gr.Error('An error occurred while creating the encoded library.')
 
         # If we are adding PDFs to an existing library, run the appropriate script.
         if mergeL == True:
@@ -160,8 +163,10 @@ def expandLib(progress=gr.Progress(track_tqdm=True)):
     #Opens a Select Folder window through tkinter and saves the user's selection.
     folderPath = filedialog.askdirectory(parent=root)
     
-    if folderPath == "": # If the user does not select a path, raise an error.
-        raise gr.Error('No folder was selected.')
+    # If the user does not select a path, display a warning message and leave state unchanged.
+    if not folderPath: 
+        gr.Warning('No folder was selected.')
+        return gr.update(), gr.update(), gr.update(), gr.update(), gr.update(), gr.update()
     
     print(f"Selected file path: {folderPath}") # Display a debugging message in the Command Prompt window.
 
@@ -192,6 +197,17 @@ def disableButtons(buttons):
 def enableButtons(buttons):
     return [gr.update(interactive=True) for button in buttons]
 
+# Hides the lower UI elements while program is loading
+def hideLowerUI():
+    hide = gr.update(visible=False)
+    clear = gr.update(value = "", visible=False)
+    return hide, hide, hide, clear, hide, hide
+
+# Shows the lower UI elements when loading is complete
+def showLowerUI():
+    show = gr.update(visible=True)
+    #showFresh = gr.update(visible=True, value="") # Clear previous search results
+    return show, show, show, show, show, show
 
 #####----- Gradio GUI -----#####
 # Set the colour scheme for the Gradio GUI. Many options are available.
@@ -229,7 +245,7 @@ with gr.Blocks(fill_height=True, theme = theme, title = "Factoid Finder") as Fac
                 gr.Markdown("") # Empty space used to align button to the right.
                 loadPath = gr.Button("Start", scale = 0, visible = False) # Button to activate the loadLib function with the path specified in the libPath textbox.
     
-    gr.Markdown('---') # Separator between the topmost row and what is below.
+    sep1 = gr.Markdown('---') # Separator between the topmost row and what is below.
 
     # A column that will display the currently loaded library and an option to add more PDFs to it.
     with gr.Column(visible = False, scale = 0) as loadedLib: # Set column to initially be hidden (until loadLib runs successfully) and to not expand to fill the remaining space.
@@ -243,7 +259,7 @@ with gr.Blocks(fill_height=True, theme = theme, title = "Factoid Finder") as Fac
                      
             addPDFs = gr.Button('Add more PDFs...', scale = 0) # Button to activate the expandLib function.
         
-        gr.Markdown('---') # Separator between this column and the next set of elements.
+        sep2 = gr.Markdown('---') # Separator between this column and the next set of elements.
 
     # This row provides the textbox where the user can enter their queries, as well as the Search button.
     with gr.Row(equal_height=True, visible = False) as searchBox: # Set all elements to be equal height, and to not be visible until loadLib runs successfully.
@@ -275,22 +291,33 @@ with gr.Blocks(fill_height=True, theme = theme, title = "Factoid Finder") as Fac
     ### The following code blocks are used to run functions when buttons are clicked. ###
     
     buttons = [searchBtn, loadPath, addPDFs, radio] #Specify the buttons to disable when other functions are running.
-    
+    toToggleVis = [loadedLib, searchBox, advancedSettings, searchResults, sep1, sep2] # Elements to hide during library load
+
     # When Start button is clicked (to load or create a library), the buttons will all be disabled (so no additional functions can be triggered), the function searchGr will then be run with the specified
     # inputs and outputs,then the buttons will be re-enabled.
-    loadPath.click(lambda: disableButtons(buttons), None, buttons).then(
-        fn = loadLib, inputs = [libPath, radio], outputs = [searchBox, advancedSettings, UInput, libPath, loadedLib, curPath]).then(
-        lambda: enableButtons(buttons), None, buttons)
+    load_event = loadPath.click(lambda: disableButtons(buttons), None, buttons).then(
+        fn = hideLowerUI, inputs = None, outputs = toToggleVis).then(
+        fn = loadLib, inputs = [libPath, radio], outputs = [searchBox, advancedSettings, UInput, libPath, loadedLib, curPath])
+
+    load_event.success(fn = showLowerUI, inputs = None, outputs = toToggleVis)
+    load_event.then(lambda: enableButtons(buttons), None, buttons)
+
 
     # Same as above, but will run if the user hits 'enter' while the libPath textbox is selected.
-    libPath.submit(lambda: disableButtons(buttons), None, buttons).then(
-        fn = loadLib, inputs = [libPath, radio], outputs = [searchBox, advancedSettings, UInput, libPath, loadedLib, curPath]).then(
-        lambda: enableButtons(buttons), None, buttons)
+    submit_event = libPath.submit(lambda: disableButtons(buttons), None, buttons).then(
+        fn = hideLowerUI, inputs = None, outputs = toToggleVis).then(
+        fn = loadLib, inputs = [libPath, radio], outputs = [searchBox, advancedSettings, UInput, libPath, loadedLib, curPath])
+        
+    submit_event.success(fn = showLowerUI, inputs = None, outputs = toToggleVis)
+    submit_event.then(lambda: enableButtons(buttons), None, buttons)
     
     # Same concept as above, but for the 'Add More PDFs' button.
-    addPDFs.click(lambda: disableButtons(buttons), None, buttons).then(
-        fn = expandLib, inputs = None, outputs = [searchBox, advancedSettings, UInput, libPath, loadedLib, curPath]).then(
-        lambda: enableButtons(buttons), None, buttons)
+    add_event = addPDFs.click(lambda: disableButtons(buttons), None, buttons).then(
+        fn = hideLowerUI, inputs = None, outputs = toToggleVis).then(
+        fn = expandLib, inputs = None, outputs = [searchBox, advancedSettings, UInput, libPath, loadedLib, curPath])
+
+    add_event.success(fn = showLowerUI, inputs = None, outputs = toToggleVis)
+    add_event.then(lambda: enableButtons(buttons), None, buttons)
 
     # Same concept as previously, but for the 'Search' button.
     searchBtn.click(lambda: disableButtons(buttons), inputs = None, outputs = buttons).then(
