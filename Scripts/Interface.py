@@ -1,4 +1,5 @@
-# TODO: Replace library creation and management functionality with separate wizard.
+# TODO: Put settings and help button at top that runs from start
+# TODO: Set last library path to be loaded when 'Load Existing' is clicked
 '''
 This script is the master script from which all other scripts are called. It also controls the graphical user interface
 from which user's can create and search PDF libraries. The script is built around the Python package Gradio (v5.6).
@@ -19,10 +20,6 @@ import tkinter as tk # Optional - Base Python package that is used to open a Sel
 # If the working directory is currently the scripts folder, change it to be one level higher (to the main Factoid Finder folder).
 if os.getcwd()[-7:] == 'Scripts':
     os.chdir("..")
-
-
-
-    
 
 # Loads the AI models used for semantic search and cross-encoding when the program is started.
 print('Initializing AI models...') # Progress message for the Command Prompt window.

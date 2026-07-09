@@ -1,4 +1,4 @@
-# TODO: Update PyMuPDF with PyMuPDF4llm
+# TODO: Update PyMuPDF with option for PyMuPDF4llm
 
 '''
 This script is used to extract text from machine-readable PDFs and
