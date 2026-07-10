@@ -37,7 +37,7 @@ def mergeLibs(loadedLibPath, libPath): #Takes the path of the active Encoded Lib
     pdfTable = pd.concat([pdfTable, pdfTable2]) # Combine both pdfTables into one.
     libraryEmbeddings = torch.cat((libraryEmbeddings, libraryEmbeddings2), dim=0) # Combine both libraryEmbeddings tensors into one.
 
-    pdfTable.reset_index(drop = True, inplace = True) # Reset the index of the new pdfTable.
+    pdfTable = pdfTable.reset_index(drop = True) # Reset the index of the new pdfTable.
 
     # Calculate the expected length of the combined data frame and tensor.
     expectedTableLen = table1Len + table2Len

@@ -71,7 +71,7 @@ def Search(UInput, Results_slider, genAI): # Arguments are the user's query, the
 
     # Create pairs of the query and each paragraph determined to be relevant (based on top k), while keeping track of original indices.
     for score, idx in zip(scores, indices):
-        paragraph = pdfTable['Content'][idx.item()]
+        paragraph = pdfTable.at[idx.item(), 'Content']
         pairs.append([query, paragraph])
         original_indices.append(idx.item())
 
@@ -88,8 +88,8 @@ def Search(UInput, Results_slider, genAI): # Arguments are the user's query, the
     
     # For each query/paragraph pair (in order of decreasing similarity scores), get relevant information to present as a search result to the user.
     for idx, (pair, ce_score, original_idx) in enumerate(combined):
-        pdfPath = pdfTable['File_Path'][original_idx] # Retrieve the file path of the PDF where the paragraph in this pair was sourced.
-        pageNum = pdfTable['Page'][original_idx] # Retrieve the page number.
+        pdfPath = pdfTable['File_Path'].iloc[original_idx] # Retrieve the file path of the PDF where the paragraph in this pair was sourced.
+        pageNum = pdfTable['Page'].iloc[original_idx] # Retrieve the page number.
 
         if os.path.exists(pdfPath) == True: # If the file exists at the specified path...
             URL = f"file:{os.path.abspath(pdfPath)}#page={pageNum}" # Create a link to the page where the paragraph originates.
@@ -112,7 +112,7 @@ def Search(UInput, Results_slider, genAI): # Arguments are the user's query, the
         else: relevanceWarn = '' # This ensures that the warning message does not persist into additional search results (only needs to be given once).
 
         # Concatenate the search results into one convenient package, to be presented to the user with markdown.
-        sResults += f'{relevanceWarn}***Preview {idx + 1}***<br>**Similarity Score:** {ce_score:.4f}<br>**File:** {pdfTable['File_Name'][original_idx]}<br>**Page:** {pdfTable['Page'][original_idx]}<br>**Link:** {URL}<br>**Paragraph:** {pair[1]}<br>------------------------------------------------------<br>'
+        sResults += f'{relevanceWarn}***Preview {idx + 1}***<br>**Similarity Score:** {ce_score:.4f}<br>**File:** {pdfTable['File_Name'].iloc[original_idx]}<br>**Page:** {pdfTable['Page'].iloc[original_idx]}<br>**Link:** {URL}<br>**Paragraph:** {pair[1]}<br>------------------------------------------------------<br>'
 
     # This code will use Retrieval Augmented Generation to create a summary of the top 5 search results.
     # It is heavily based on the code provided in the Microsoft Phi 3.5 documentation: https://huggingface.co/microsoft/Phi-3.5-mini-instruct.
@@ -134,10 +134,10 @@ def Search(UInput, Results_slider, genAI): # Arguments are the user's query, the
         for idx, (pair, ce_score, original_idx) in enumerate(combined):
             if idx >= 5:
                 break
-            pdfPath = pdfTable['File_Path'][original_idx]
-            pageNum = pdfTable['Page'][original_idx]
+            pdfPath = pdfTable['File_Path'].iloc[original_idx]
+            pageNum = pdfTable['Page'].iloc[original_idx]
 
-            toSum += f"***Search Result {idx + 1}***<br>**Similarity Score:** {ce_score:.4f}<br>**File:** {pdfTable['File_Name'][original_idx]}<br>**Page:** {pdfTable['Page'][original_idx]}<br>**Paragraph:** {pair[1]}<br>------------------------------------------------------<br>"
+            toSum += f"***Search Result {idx + 1}***<br>**Similarity Score:** {ce_score:.4f}<br>**File:** {pdfTable['File_Name'].iloc[original_idx]}<br>**Page:** {pdfTable['Page'].iloc[original_idx]}<br>**Paragraph:** {pair[1]}<br>------------------------------------------------------<br>"
 
         # Pass the system prompt and a prompt asking the AI to summarize our top 5 search results.
         messages = [ 
@@ -160,7 +160,7 @@ def Search(UInput, Results_slider, genAI): # Arguments are the user's query, the
         
         genAIout = pipe(messages, **generation_args) 
 
-        genAIout = genAIout[0]['generated_text']
+        genAIout = genAIout[0].iloc['generated_text']
         re.sub(r'\n', '<br>', genAIout) #Reformat for markdown
         
         sResults = f"**AI Summary**: {genAIout} <br> {sResults}"

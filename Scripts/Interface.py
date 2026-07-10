@@ -297,6 +297,7 @@ with gr.Blocks(fill_height=True, title = "Factoid Finder") as FactoidFinder: # S
         fn = loadLib, inputs = [libPath, radio], outputs = [searchBox, advancedSettings, UInput, libPath, loadedLib, curPath])
 
     load_event.success(fn = showLowerUI, inputs = None, outputs = toToggleVis)
+    load_event.failure(lambda: enableButtons(buttons), None, buttons)
     load_event.then(lambda: enableButtons(buttons), None, buttons)
 
 
@@ -306,6 +307,7 @@ with gr.Blocks(fill_height=True, title = "Factoid Finder") as FactoidFinder: # S
         fn = loadLib, inputs = [libPath, radio], outputs = [searchBox, advancedSettings, UInput, libPath, loadedLib, curPath])
         
     submit_event.success(fn = showLowerUI, inputs = None, outputs = toToggleVis)
+    submit_event.failure(lambda: enableButtons(buttons), None, buttons)
     submit_event.then(lambda: enableButtons(buttons), None, buttons)
     
     # Same concept as above, but for the 'Add More PDFs' button.
@@ -314,6 +316,7 @@ with gr.Blocks(fill_height=True, title = "Factoid Finder") as FactoidFinder: # S
         fn = expandLib, inputs = None, outputs = [searchBox, advancedSettings, UInput, libPath, loadedLib, curPath])
 
     add_event.success(fn = showLowerUI, inputs = None, outputs = toToggleVis)
+    add_event.failure(lambda: enableButtons(buttons), None, buttons)
     add_event.then(lambda: enableButtons(buttons), None, buttons)
 
     # Same concept as previously, but for the 'Search' button.

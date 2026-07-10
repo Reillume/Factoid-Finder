@@ -10,7 +10,7 @@ in should be relatively straightforward with PyMuPDF and Tesseract.
 import os # Critical - Base Python package needed for many functions.
 import pandas as pd # Critical - Necessary for working with extracted PDF content and metadata.
 import re # Critical - Base Python package used to modify strings.
-from sentence_transformers import SentenceTransformer, SimilarityFunction # Critical - Runs Small Language Models used for semantic search.
+from sentence_transformers import SentenceTransformer # Critical - Runs Small Language Models used for semantic search.
 import pickle # Critical - Saves and reads the Encoded Libraries.
 import pymupdf # Optional - Reads the contents of PDFs. Note: If the AGPL licence is problematic, this package can be easily substituted for a different PDF reading package. 
 import tqdm # Optional - Provides progress tracking.
@@ -157,7 +157,10 @@ def createLibrary(mergeL):
     pdfTable['Content'] = pdfTable['Content'].str.split('\n') # Split the text content of each page roughly into paragraphs (as determined by new lines)
     pdfTable = pdfTable.explode('Content').reset_index(drop=True) # Give each paragraph it's own record
     pdfTable['Content'] = pdfTable['Content'].str.strip() # Clean the chunks of text
-    
+    pdfTable['Split'] = 0 # Add column to track whether chunk was unnaturally split
+
+    pdfTable['Content'] = pdfTable['Content'].astype(object) # Explicitly set type as object to hold lists
+
     # This loop will check that each document chunk (paragraph) is not larger than the maximum size, or split it if it is.
     # The maximum size should be well less than 500 tokens for the current SLMs and take into account the minimum chunk size that might be added back on.
     for i in range(len(pdfTable)):
@@ -195,7 +198,7 @@ def createLibrary(mergeL):
 
     # Clean the content once more in case the concatenating introduced weird strings.
     pdfTable['Content'] = pdfTable['Content'].str.strip()
-    pdfTable.replace('', pd.NA, inplace=True)
+    pdfTable = pdfTable.replace('', pd.NA)
     
     # Identify if there are any PDFs from which no text was extracted.
     noTextCount = pdfTable.groupby('File_Path')['Content'].count()
@@ -207,10 +210,10 @@ def createLibrary(mergeL):
         pdfLog += f'Warning: No text was found in {File_Path}. Is it machine-readable? \n'
     
     # Clean up the pdfTable one last time.
-    pdfTable.sort_values(by='File_Name', inplace=True) # Sort by file name.
-    pdfTable.dropna(subset=['Content'], inplace=True) # Drop rows with no content/chunks.
-    pdfTable.drop_duplicates(subset=['Title', 'Author', 'Subject', 'Keywords', 'Page', 'Content'], inplace=True) # Remove any rows that appear to be duplicate PDFs.
-    pdfTable.reset_index(drop=True, inplace=True) # Reset the index of the table.
+    pdfTable = pdfTable.sort_values(by='File_Name') # Sort by file name.
+    pdfTable = pdfTable.dropna(subset=['Content']) # Drop rows with no content/chunks.
+    pdfTable = pdfTable.drop_duplicates(subset=['Title', 'Author', 'Subject', 'Keywords', 'Page', 'Content']) # Remove any rows that appear to be duplicate PDFs.
+    pdfTable = pdfTable.reset_index(drop=True) # Reset the index of the table.
     
     if pdfTable.shape[0] == 0: # If the pdfTable is empty...
         raise IndexError('PDF Table cannot be blank.') # Raise an error.
@@ -231,9 +234,9 @@ def createLibrary(mergeL):
         pdfTable = pdfTable[pdfTable['Source'] == 'pdfTable'] 
         
         # Drop the Source column and remove the old library to get memory back.
-        pdfTable.drop(columns=['Source'], inplace=True)
-        pdfTable0.drop(columns=['Source'], inplace=True)
-        pdfTable.reset_index(drop=True, inplace=True)
+        pdfTable = pdfTable.drop(columns=['Source'])
+        pdfTable0 = pdfTable0.drop(columns=['Source'])
+        pdfTable = pdfTable.reset_index(drop=True)
         del pdfTable0 #Remove this now that we no longer need it.
 
     # After removing duplicates, raise an error message if no new content was left.
