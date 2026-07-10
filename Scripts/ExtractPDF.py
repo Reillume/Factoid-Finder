@@ -242,13 +242,12 @@ def createLibrary(mergeL):
     
     #####----- Encode text blocks -----#####
     # Load the model we are using for semantic search, then use it to encode the 'content' column of the pdfTable. 
-    embedder = SentenceTransformer('sentence-transformers/msmarco-distilbert-dot-v5')
-    libraryEmbeddings = embedder.encode(pdfTable['Content'].tolist(), convert_to_tensor=True, show_progress_bar=True, 
-                                        tqdm_kwargs={'desc': 'Encoding text blocks', 
-                                                     'bar_format': '{l_bar}{bar:20}{r_bar}{bar:-10b}',
-                                                     'total': len(pdfTable['Content']) # Display a progress bar while encoding the text.
-        })
     
+    embedder = SentenceTransformer('Snowflake/snowflake-arctic-embed-s')
+    print("Made it to the embedding!") #zzzdebugging
+    libraryEmbeddings = embedder.encode(pdfTable['Content'].tolist(), convert_to_tensor=True, show_progress_bar=True)
+    
+    print("Past the embedder!") #zzzDebugging
     # Get the current date and time.
     currentTime = datetime.datetime.now()
 

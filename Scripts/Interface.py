@@ -104,7 +104,7 @@ def loadLib(libPath, radio, mergeL=False, progress=gr.Progress(track_tqdm=True))
                 raise gr.Error('No PDFs with machine-readable text were found in the specified folder.', duration = 15)
             
             # The ExtractPDF script is set to flag a value error if content is found for the library, but none of it is new.
-            except ValueError: 
+            except ValueError:
                 gr.Warning('No new machine-readable PDFs were found in the specified folder.', duration=15)
                 # Safely exit the function without changing the program state any further
                 return gr.update(), gr.update(), gr.update(), gr.update(), gr.update(), gr.update()
@@ -217,7 +217,7 @@ theme = gr.themes.Ocean().set(
 )
 
 ### The remaining code sets up the Gradio GUI.
-with gr.Blocks(fill_height=True, theme = theme, title = "Factoid Finder") as FactoidFinder: # Set the program to take a full page, use the theme specified above, and 
+with gr.Blocks(fill_height=True, title = "Factoid Finder") as FactoidFinder: # Set the program to take a full page, use the theme specified above, and 
                                                                                             #be titled correctly.
     
     # This is the topmost row, and contains the elements needed to create or load a library.
@@ -330,4 +330,4 @@ with gr.Blocks(fill_height=True, theme = theme, title = "Factoid Finder") as Fac
     
 print('Program launching in default browser.') # Print message in the Command Prompt window.
 
-FactoidFinder.queue().launch(quiet = True, inbrowser = True) # Launch the Gradio GUI in the browser.
+FactoidFinder.queue().launch(quiet = True, inbrowser = True, theme = theme) # Launch the Gradio GUI in the browser.

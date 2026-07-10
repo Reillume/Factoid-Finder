@@ -1,3 +1,4 @@
+# TODO: Add QA model for highlighting most relevant part of query
 '''
 This script performs all of the search and information retrieval tasks done in
 this program. It uses a bi-directional encoder to rank the top k 
@@ -24,8 +25,8 @@ def initializeEmbedders():
 
     # Load the bi-directional encoder and cross-encoder that are used for semantic search.
     # Note: If desired, changing these models to new versions is relatively straight-forward.
-    embedder = SentenceTransformer('sentence-transformers/msmarco-distilbert-dot-v5') # Chosen for it's combination of accuracy, speed, and integration with Sentence-Transformers.
-    model = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2", max_length=512) # Chosen based on qualitative testing and experimentation.
+    embedder = SentenceTransformer('Snowflake/snowflake-arctic-embed-s') 
+    model = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2', max_length=512)
 
 # This function loads an Encoded Library that was saved previously.
 def loadPickle(UPickle):
@@ -52,11 +53,11 @@ def Search(UInput, Results_slider, genAI): # Arguments are the user's query, the
     query = UInput
     topK = min(Results_slider, len(pdfTable['Content'])) # Ensure that max number of results is not longer than the total number of records.
 
-    # Find the closest n sentences of the corpus for each query sentence based on dot product similarity.
-    queryEmbedding = embedder.encode(query, convert_to_tensor=True)
+    # Find the closest n sentences of the corpus for each query sentence based on cosine similarity.
+    queryEmbedding = embedder.encode(query, prompt_name="query", convert_to_tensor=True)
     
-    # Use dot product and torch.topk to find the highest k scores
-    similarity_scores = util.dot_score(queryEmbedding, libraryEmbeddings)[0].cpu().tolist()
+    # Use cosine similarity and torch.topk to find the highest k scores
+    similarity_scores = util.cos_sim(queryEmbedding, libraryEmbeddings)[0].cpu().tolist()
     similarity_scores = torch.tensor(similarity_scores)
     scores, indices = torch.topk(similarity_scores, k=topK)
 
