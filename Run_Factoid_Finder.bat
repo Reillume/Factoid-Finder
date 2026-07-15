@@ -3,8 +3,8 @@
 type Setup\Logo.txt
 timeout /t 5 >nul
 
-REM This next line is very important. It specifies where the Python 3.12 installation is located. Change this if the default path is not correct.
-set "python_location= %LOCALAPPDATA%\Programs\Python\Python312\python.exe"
+REM This next line is very important. It specifies where the Python 3.13 installation is located. Change this if the default path is not correct.
+set "python_location= %LOCALAPPDATA%\Programs\Python\Python313\python.exe"
 echo %python_location%
 
 REM Check Python version
