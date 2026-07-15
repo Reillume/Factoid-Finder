@@ -2,7 +2,7 @@
 
 Local semantic search for PDF documents, designed for ease of use and compatibility. No GPU required.
 
-Tested with Python 3.12 on Windows 11.
+Currently under development. Basic testing completed with Python 3.13 on Ubuntu 26.04.
 
 ## Introduction
 
