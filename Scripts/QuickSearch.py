@@ -1,4 +1,3 @@
-# TODO: Add QA model for highlighting most relevant part of query
 '''
 This script performs all of the search and information retrieval tasks done in
 this program. It uses a bi-directional encoder to rank the top k 
@@ -9,11 +8,11 @@ the full PDF. Basic Retrieval Augmented Generation functionality is also include
 #####----- Import Packages -----#####
 import pandas as pd # Critical - Necessary for working with extracted PDF content and metadata.
 import torch # Critical - Provides tools for working with Small Language Models.
-from sentence_transformers import SentenceTransformer, SimilarityFunction, CrossEncoder, util # Critical - Runs Small Language Models used for semantic search.
+from sentence_transformers import SentenceTransformer, CrossEncoder, util # Critical - Runs Small Language Models used for semantic search.
 import pickle # Critical - Saves and reads the Encoded Libraries.
 import os # Critical - Base Python package needed for many functions.
 import re # Critical - Base Python package used to modify strings.
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline # Optional - Allows for Microsoft Phi 3.5 to be run for RAG.
+from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline, logging # Optional - Allows for Microsoft Phi 3.5 to be run for RAG.
 import torch.nn as nn # Optional - Allows for the use Sigmoid activation function for the cross-encoder.
 
 #####----- Load Models and Data -----#####
@@ -22,11 +21,15 @@ import torch.nn as nn # Optional - Allows for the use Sigmoid activation functio
 def initializeEmbedders():
     global embedder
     global model
+    global QAModel
+
+    logging.set_verbosity_error() # Stops HF warning from using old models
 
     # Load the bi-directional encoder and cross-encoder that are used for semantic search.
     # Note: If desired, changing these models to new versions is relatively straight-forward.
     embedder = SentenceTransformer('Snowflake/snowflake-arctic-embed-s') 
     model = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2', max_length=512)
+    QAModel = pipeline('question-answering', model="deepset/tinyroberta-squad2", tokenizer="deepset/tinyroberta-squad2")
 
 # This function loads an Encoded Library that was saved previously.
 def loadPickle(UPickle):
@@ -76,7 +79,7 @@ def Search(UInput, Results_slider, genAI): # Arguments are the user's query, the
         original_indices.append(idx.item())
 
     # Predict the similarity of each query/paragraph pair using a cross-encoder.
-    cross_encoder_scores = model.predict(pairs, activation_fct=nn.Sigmoid())
+    cross_encoder_scores = model.predict(pairs, activation_fn=nn.Sigmoid())
 
     # Combine query/paragraph pairs, their similarity scores, and original indices into a list of tuples. Then sort by score in descending order
     combined = list(zip(pairs, cross_encoder_scores, original_indices))
@@ -88,6 +91,27 @@ def Search(UInput, Results_slider, genAI): # Arguments are the user's query, the
     
     # For each query/paragraph pair (in order of decreasing similarity scores), get relevant information to present as a search result to the user.
     for idx, (pair, ce_score, original_idx) in enumerate(combined):
+        
+        # If the answer is sufficiently relevant, use a QA model to find the most relevant part of the answer to highlight
+        if ce_score > 0.8:
+            ans = QAModel(question=pair[0],
+                          context=pair[1],
+                          max_seq_len=512,  # TinyRoBERTa max capacity
+                          doc_stride=128,    # Overlap chunk window size
+                          handle_impossible_answer=True
+            )
+            
+            # If the QA model identified an answer, insert tags that will be replaced with markdown highlights later
+            if ans['answer']:
+                start = ans['start']
+                end = ans['end']
+
+                # Insert unique tags that can be replaced by markdown after in-text markdown is stripped
+                pair[1] = pair[1][:start] + "89451486489 HLSTART 89451486489" + pair[1][start:end] + "89451486489 HLEND 89451486489" + pair[1][end:]
+            
+            del(ans) # Clear answer so it does not persist to future iterations
+
+
         pdfPath = pdfTable['File_Path'].iloc[original_idx] # Retrieve the file path of the PDF where the paragraph in this pair was sourced.
         pageNum = pdfTable['Page'].iloc[original_idx] # Retrieve the page number.
 
@@ -98,12 +122,15 @@ def Search(UInput, Results_slider, genAI): # Arguments are the user's query, the
         #htmlLink = f'<a href="{URL}"></a>' # Note: This was triggering the anti-virus so was disabled.
 
         # Create a list of all the potential characters that might break the markdown.
-        codeChars = ['`', '*', '_', '[', ']', '(', ')', '#', '>', '-', '~', ':', '=', '^', '|', '<']
-        
-        # For each character in the list of problematic characters, loop through the paragraph in the current pair and add an escape character ahead of it.
-        for char in codeChars:
-            pair[1] = re.sub(re.escape(char), r'\\' + char, pair[1])
+        mdChars = r"([`*_\[\]()#>\-:~=|<>^])"
 
+        # Escape markdown characters
+        pair[1] = re.sub(mdChars, r'\\\1', pair[1])
+
+        # Add markdown highlighting back in to show the answer
+        hlTag = '<mark style="background-color: #a7f3d0; color: black;">'
+        pair[1] = pair[1].replace("89451486489 HLSTART 89451486489", hlTag).replace("89451486489 HLEND 89451486489", "</mark>")
+            
         # If the similarity score of a result is below 0.8, provide a warning to the user in the search results. Since results are sorted in order of decreasing similarity, this only needs to be done once.
         if (ce_score < 0.8) and (warningGiven == False):
             relevanceWarn = r'⚠️ Warning: The following results do not appear to be very relevant to your query. ⚠️<br>'
